@@ -1,0 +1,38 @@
+version: "3.9"
+
+services:
+  todo-db:
+    image: postgres:15
+    volumes:
+      - postgres_data:/var/lib/postgresql/data/
+    environment:
+      POSTGRES_DB: todo
+      POSTGRES_USER: todo
+      POSTGRES_PASSWORD: todo
+    ports:
+      - "5432:5432"
+    restart: always
+
+  todo-web:
+    build: .
+    command: gunicorn todo.wsgi:application --bind 0.0.0.0:8000
+    volumes:
+      - .:/app
+      - static_volume:/app/staticfiles
+      - media_volume:/app/media
+    ports:
+      - "8000:8000"
+    depends_on:
+      - todo-db
+    environment:
+      - DEBUG=0
+      - DJANGO_SETTINGS_MODULE=todo.settings
+      - SECRET_KEY=your-secret-key
+      - ALLOWED_HOSTS=*
+      - DATABASE_URL=postgres://todo:todo@todo-db:5432/todo
+    restart: always
+
+volumes:
+  postgres_data:
+  static_volume:
+  media_volume:

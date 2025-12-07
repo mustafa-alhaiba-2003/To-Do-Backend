@@ -1,0 +1,9 @@
+django==5.0.6
+gunicorn==21.2.0
+psycopg2-binary==2.9.10
+whitenoise==6.8.0
+django-cors-headers==4.6.0
+django-rest-framework
+djangorestframework-simplejwt
+django-phonenumber-field 
+phonenumbers
