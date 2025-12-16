@@ -111,8 +111,9 @@ WSGI_APPLICATION = "todo.wsgi.application"
 
 import dj_database_url
 
-DATABASES = dj_database_url.config("postgres://todo:todo@HOST:5432/todo")
-
+DATABASES = {
+    "default": dj_database_url.parse("postgres://todo:todo@HOST:5432/todo")
+}
 # Password validation
 # https://docs.djangoproject.com/en/5.0/ref/settings/#auth-password-validators
 
