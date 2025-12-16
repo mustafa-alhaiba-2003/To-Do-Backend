@@ -47,6 +47,6 @@ COPY --from=builder /app/staticfiles /app/staticfiles
 EXPOSE 8000
 
 # Entrypoint (can be adjusted as needed)
-CMD ["python", "manage.py", "makemigrations"]
-CMD ["python", "manage.py", "migrate"]
-CMD ["python", "manage.py", "runserver", "0.0.0.0:8000"]
+COPY entrypoint.sh /entrypoint.sh
+RUN chmod +x /entrypoint.sh
+CMD ["/entrypoint.sh"]
