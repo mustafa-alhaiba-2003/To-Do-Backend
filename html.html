@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Send Email, Username, Password</title>
+</head>
+<body>
+  <h2>Test Send Credentials</h2>
+  <form id="credentialsForm" onsubmit="return false;">
+    <label>Email: <input type="email" id="email" required></label><br>
+    <label>Username: <input type="text" id="username" required></label><br>
+    <label>Password: <input type="password" id="password" required></label><br>
+    <button type="button" onclick="sendCredentials()">Send</button>
+  </form>
+  <div id="result"></div>
+
+  <script>
+    async function sendCredentials() {
+      const email = document.getElementById('email').value;
+      const username = document.getElementById('username').value;
+      const password = document.getElementById('password').value;
+
+      try {
+        const response = await fetch('http://localhost:8000/api/user/auth/register/', { // Set your API endpoint here
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ 'redboysct@gmail.com', 'username', 'passwor' }),
+        });
+        const data = await response.json();
+        document.getElementById('result').innerText = JSON.stringify(data, null, 2);
+      } catch (error) {
+        document.getElementById('result').innerText = 'Error: ' + error;
+      }
+    }
+  </script>
+</body>
+</html>
