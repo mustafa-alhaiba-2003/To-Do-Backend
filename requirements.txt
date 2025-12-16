@@ -7,3 +7,5 @@ django-rest-framework
 djangorestframework-simplejwt
 django-phonenumber-field 
 phonenumbers
+dj-database-url==3.0.1
+django-cors-headers==4.9.0
