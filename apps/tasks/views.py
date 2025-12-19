@@ -1,9 +1,11 @@
-from rest_framework import generics, permissions, status
+from rest_framework import generics, permissions, status , viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
 from datetime import datetime
 from .models import Task
-from .serializers import TaskSerializer
+from .serializers import TaskSerializer , UserTaskSerializer
+from .pagination import CustomLimitOffsetPagination
+from django.utils import timezone
 
 class UserTaskDashboardView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -27,3 +29,24 @@ class UserTaskDashboardView(APIView):
             "overdue_tasks": overdue_tasks,
             "recent_tasks": recent_tasks_list
         }, status=status.HTTP_200_OK)
+
+
+class UserTaskViewSet(viewsets.ModelViewSet):
+    serializer_class = UserTaskSerializer
+    queryset = Task.objects.all()
+    permission_classes = [permissions.IsAuthenticated]
+    pagination_class = CustomLimitOffsetPagination
+
+    def get_queryset(self):
+        return self.queryset.filter(user = self.request.user)    
+    
+    def perform_create(self, serializer):
+        serializer.save(
+            user=self.request.user, 
+            start_date=timezone.now()
+        )
+
+    def perform_update(self, serializer):
+        serializer.save(
+            user=self.request.user
+        )
