@@ -1,3 +1,13 @@
+
+from django.db.models import Case, When, IntegerField
+from django.utils import timezone
+from django_filters.rest_framework import DjangoFilterBackend
+from rest_framework import filters, permissions, viewsets
+
+from .models import Task
+from .serializers import UserTaskSerializer
+from .filtres import TaskFilter
+
 from rest_framework import generics, permissions, status , viewsets
 from rest_framework.response import Response
 from rest_framework.views import APIView
@@ -33,20 +43,45 @@ class UserTaskDashboardView(APIView):
 
 class UserTaskViewSet(viewsets.ModelViewSet):
     serializer_class = UserTaskSerializer
-    queryset = Task.objects.all()
     permission_classes = [permissions.IsAuthenticated]
     pagination_class = CustomLimitOffsetPagination
 
+    # Search + Filter + Ordering
+    filter_backends = [DjangoFilterBackend, filters.SearchFilter, filters.OrderingFilter]
+    filterset_class = TaskFilter
+
+    # DRF search (?search=...)
+    search_fields = ["title", "description"]
+
+    # Ordering (?ordering=... or ?ordering=-...)
+    # NOTE: we include "priority_rank" for correct high>medium>low ordering
+    ordering_fields = [
+        "id",
+        "title",
+        "status",
+        "priority",
+        "start_date",
+        "due_date",
+        "priority_rank",
+    ]
+    ordering = ["-start_date"]
+
     def get_queryset(self):
-        return self.queryset.filter(user = self.request.user)    
-    
-    def perform_create(self, serializer):
-        serializer.save(
-            user=self.request.user, 
-            start_date=timezone.now()
+        qs = Task.objects.filter(user=self.request.user)
+
+        qs = qs.annotate(
+            priority_rank=Case(
+                When(priority="high", then=0),
+                When(priority="medium", then=1),
+                When(priority="low", then=2),
+                default=99,
+                output_field=IntegerField(),
+            )
         )
+        return qs
+
+    def perform_create(self, serializer):
+        serializer.save(user=self.request.user)
 
     def perform_update(self, serializer):
-        serializer.save(
-            user=self.request.user
-        )
+        serializer.save(user=self.request.user)
