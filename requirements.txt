@@ -8,4 +8,5 @@ djangorestframework-simplejwt
 django-phonenumber-field 
 phonenumbers
 dj-database-url==3.0.1
-django-filter
+django-filter==25.1
+pillow==12.1.0

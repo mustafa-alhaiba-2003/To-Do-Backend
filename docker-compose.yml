@@ -3,6 +3,7 @@ version: "3.9"
 services:
   todo-db:
     image: postgres:15
+    container_name: todo-db
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
@@ -12,10 +13,17 @@ services:
     ports:
       - "5432:5432"
     restart: always
+    networks:
+      - todo-network
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U todo"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
 
   todo-web:
     build: .
-    command: gunicorn todo.wsgi:application --bind 0.0.0.0:8000
+    container_name: todo-web
     volumes:
       - .:/app
       - static_volume:/app/staticfiles
@@ -23,7 +31,8 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - todo-db
+      todo-db:
+        condition: service_healthy
     environment:
       - DEBUG=0
       - DJANGO_SETTINGS_MODULE=todo.settings
@@ -31,6 +40,12 @@ services:
       - ALLOWED_HOSTS=*
       - DATABASE_URL=postgres://todo:todo@todo-db:5432/todo
     restart: always
+    networks:
+      - todo-network
+
+networks:
+  todo-network:
+    driver: bridge
 
 volumes:
   postgres_data:

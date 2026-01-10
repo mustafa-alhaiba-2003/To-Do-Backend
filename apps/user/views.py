@@ -4,7 +4,7 @@ from rest_framework.response import Response
 from rest_framework.permissions import AllowAny, IsAuthenticated
 from rest_framework_simplejwt.tokens import RefreshToken
 
-from apps.user.serializers import RegisterSerializer, LoginSerializer, UserSerializer
+from apps.user.serializers import RegisterSerializer, LoginSerializer, UserSerializer, MyProfileSerializer
 from apps.user.services import JWTService
 from apps.user.models import User
 
@@ -108,3 +108,38 @@ class AuthViewSet(viewsets.GenericViewSet):
         }, status=status.HTTP_200_OK)
         response = JWTService.set_jwt_cookies(response, new_access_token, new_refresh_token)
         return response
+
+
+class MyProfileViewSet(viewsets.GenericViewSet):
+    """
+    ViewSet for managing user profile (get and update)
+    """
+    serializer_class = MyProfileSerializer
+    permission_classes = [IsAuthenticated]
+
+    @action(detail=False, methods=['get' , 'patch','put'], url_path='me')
+    def get_profile(self, request):
+        """
+        Get current user's profile information
+        """
+        if request.method == "GET":
+            serializer = self.get_serializer(request.user)
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        if request.method in ["PATCH","PUT"]:
+            serializer = self.get_serializer(request.user, data=request.data, partial=True)
+            if serializer.is_valid():
+                serializer.save()
+                return Response(serializer.data, status=status.HTTP_200_OK)
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+
+    @action(detail=False, methods=['patch', 'put'])
+    def update_profile(self, request):
+        """
+        Update current user's profile information
+        """
+        serializer = self.get_serializer(request.user, data=request.data, partial=True)
+        if serializer.is_valid():
+            serializer.save()
+            return Response(serializer.data, status=status.HTTP_200_OK)
+        return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)

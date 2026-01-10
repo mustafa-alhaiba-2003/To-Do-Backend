@@ -28,7 +28,7 @@ WORKDIR /app
 
 # Install runtime dependencies
 RUN apt-get update \
-    && apt-get install -y libpq-dev \
+    && apt-get install -y libpq-dev netcat-traditional \
     && rm -rf /var/lib/apt/lists/*
 
 # Copy python dependencies from builder

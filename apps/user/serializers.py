@@ -54,3 +54,10 @@ class UserSerializer(serializers.ModelSerializer):
         fields = ['id', 'email', 'username', 'full_name', 'date_joined']
         read_only_fields = ['id', 'date_joined']
 
+
+class MyProfileSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = User
+        fields = ['id', 'username', 'email', 'image']
+        read_only_fields = ['id']
+
