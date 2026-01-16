@@ -48,7 +48,8 @@ INSTALLED_APPS = [
 
 APPS = [
     "apps.user",
-    "apps.tasks"
+    "apps.tasks",
+    "apps.dashboard",
 ]
 
 THIRD_PARTY_APPS = [
