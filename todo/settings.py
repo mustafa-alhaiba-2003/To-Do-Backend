@@ -50,6 +50,7 @@ APPS = [
     "apps.user",
     "apps.tasks",
     "apps.dashboard",
+    "apps.notifications",
 ]
 
 THIRD_PARTY_APPS = [

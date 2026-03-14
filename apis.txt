@@ -1,0 +1,62 @@
+List Tokens : GET {{base}}api/admin/notifications/devices/
+
+response : 
+{
+    "count": 1,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 1,
+            "registration_token": "lkajdsajlsakjdlsakjdsalkdjslakjdsalkjdlakjda",
+            "is_active": true,
+            "created_at": "2026-03-14T17:46:51.804908Z"
+        }
+    ]
+}
+
+
+Register Token : POST {{base}}api/notifications/devices/ 
+
+Request Body : 
+{
+    "registration_token":"lkajdsajlsakjdlsakjdsalkdjslakjdsalkjdlakjda"
+}
+
+
+List Notifications : GET {{base}}api/notifications/history/
+
+response : 
+{
+    "count": 2,
+    "next": null,
+    "previous": null,
+    "results": [
+        {
+            "id": 2,
+            "title": "New task created: Third Task",
+            "body": "Mustafa created a new task: Third Task.",
+            "data_payload": {
+                "type": "task_created",
+                "task_id": "24",
+                "created_by": "Mustafa",
+                "task_title": "Third Task"
+            },
+            "is_read": false,
+            "created_at": "2026-03-14T17:57:48.887632Z"
+        },
+        {
+            "id": 1,
+            "title": "New task created: Third Task",
+            "body": "Mustafa created a new task: Third Task.",
+            "data_payload": {
+                "type": "task_created",
+                "task_id": "24",
+                "created_by": "Mustafa",
+                "task_title": "Third Task"
+            },
+            "is_read": false,
+            "created_at": "2026-03-14T17:57:48.883607Z"
+        }
+    ]
+}

@@ -1,4 +1,5 @@
 
+from apps.notifications.models import User
 from django.db.models import Case, When, IntegerField
 from django.utils import timezone
 from django_filters.rest_framework import DjangoFilterBackend
@@ -16,6 +17,7 @@ from .models import Task
 from .serializers import TaskSerializer , UserTaskSerializer
 from .pagination import CustomLimitOffsetPagination
 from django.utils import timezone
+from apps.notifications.services.send_notification_service import create_and_send_notification
 
 class UserTaskDashboardView(APIView):
     permission_classes = [permissions.IsAuthenticated]
@@ -81,7 +83,21 @@ class UserTaskViewSet(viewsets.ModelViewSet):
         return qs
 
     def perform_create(self, serializer):
-        serializer.save(user=self.request.user)
+        task = serializer.save(user=self.request.user)
+        admins = User.objects.filter(role ="admin", is_active=True)
+        title = f"New task created: {task.title}"
+        body = f"{self.request.user.get_full_name() or self.request.user.username} created a new task: {task.title}."
+        data = {
+            "type": "task_created",
+            "task_id": str(task.id),
+            "task_title": task.title,
+            "created_by": self.request.user.username,
+        }
+        for admin in admins:
+            try:
+                create_and_send_notification(admin, title, body, data)
+            except Exception:
+                pass
 
     def perform_update(self, serializer):
         serializer.save(user=self.request.user)
