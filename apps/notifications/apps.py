@@ -13,3 +13,4 @@ class NotificationsConfig(AppConfig):
             cred_path = os.getenv('FIREBASE_CREDENTIALS_PATH', 'secrets.json')
             cred = credentials.Certificate(cred_path)
             firebase_admin.initialize_app(cred)
+        import apps.notifications.signals

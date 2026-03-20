@@ -38,6 +38,7 @@ ALLOWED_HOSTS = [
 # Application definition
 
 INSTALLED_APPS = [
+    'channels',
     "django.contrib.admin",
     "django.contrib.auth",
     "django.contrib.contenttypes",
@@ -54,6 +55,7 @@ APPS = [
 ]
 
 THIRD_PARTY_APPS = [
+    'django_eventstream',
     "phonenumber_field",
     "rest_framework",
     "rest_framework_simplejwt",
@@ -120,7 +122,7 @@ TEMPLATES = [
 ]
 
 WSGI_APPLICATION = "todo.wsgi.application"
-
+ASGI_APPLICATION = 'todo.asgi.application'
 
 # Database
 # https://docs.djangoproject.com/en/5.0/ref/settings/#databases
@@ -204,3 +206,9 @@ CSRF_TRUSTED_ORIGINS = [
     "http://localhost:5173",
     "http://127.0.0.1:5173",
 ]
+
+CHANNEL_LAYERS = {
+    'default': {
+        'BACKEND': 'channels.layers.InMemoryChannelLayer',
+    },
+}

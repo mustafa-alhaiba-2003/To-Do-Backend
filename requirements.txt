@@ -11,3 +11,6 @@ dj-database-url==3.0.1
 django-filter==25.1
 pillow==12.1.0
 firebase-admin
+uvicorn[standard]
+channels==4.0.0
+django-eventstream==5.1.0

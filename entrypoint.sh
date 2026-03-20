@@ -13,6 +13,7 @@ echo "PostgreSQL started"
 python manage.py makemigrations
 python manage.py migrate
 
-# Start gunicorn
-exec gunicorn todo.wsgi:application --bind 0.0.0.0:8000
-
+exec gunicorn todo.asgi:application \
+    --bind 0.0.0.0:8000 \
+    --workers 4 \
+    --worker-class uvicorn.workers.UvicornWorker
